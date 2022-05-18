@@ -1,8 +1,8 @@
 FROM alpine:3.15.4
 
-RUN mkdir /app
-
 WORKDIR /app
+
+VOLUME /app
 
 ARG TARGETARCH
 
@@ -17,7 +17,9 @@ RUN prince_arch=$([ "$TARGETARCH" == "arm64" ] && echo "aarch64-musl" || echo "x
     && curl https://www.princexml.com/download/prince-${PRINCE_VER}-${DISTRO}-${prince_arch}.tar.gz -o prince.tar.gz \
     && mkdir prince \
     && tar -zxvf prince.tar.gz -C prince --strip-components=1 \
-    && rm prince.tar.gz
+    && rm prince.tar.gz \
+    && cd prince \
+    && yes "" | ./install.sh
 
 # Add custom fonts
 ADD fonts/ /usr/share/fonts/
@@ -37,6 +39,4 @@ RUN apk add --no-cache msttcorefonts-installer fontconfig && \
     update-ms-fonts && \
     fc-cache -f && rm -rf /var/cache/*
 
-# ENTRYPOINT ["ls", "-lah", "prince/lib/prince/bin/prince"]
-
-ENTRYPOINT [ "prince/lib/prince/bin/prince" ]
+ENTRYPOINT [ "prince" ]
