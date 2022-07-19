@@ -2,8 +2,6 @@ FROM alpine:3.16.1
 
 WORKDIR /app
 
-VOLUME /app
-
 ARG TARGETARCH
 
 # https://www.princexml.com/latest/
